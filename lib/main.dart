@@ -3,6 +3,7 @@ import 'package:listy/data.dart';
 import 'package:listy/pages/home_page.dart';
 import 'package:listy/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,6 +11,15 @@ Future main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Hive.initFlutter();
+  await Hive.openBox<String>("entrances");
+
+  Box entrances = Boxes.getEntrances();
+
+  if (entrances.values.isEmpty) {
+    entrances.add("#000000");
+  }
 
   runApp(const MyApp());
 }

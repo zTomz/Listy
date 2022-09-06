@@ -2,8 +2,29 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-Future sinInWithEmailAndPassword(String email, String password) async {
+Future singInWithEmailAndPassword(String email, String password) async {
+  try {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    return "Signed In";
+  } catch (e) {
+    return e.toString();
+  }
+}
 
+Future<String> singUpWithEmailAndPassword(
+    String email, String password, String repeatPassword) async {
+  if (password != repeatPassword) {
+    return "Passwords dont match";
+  }
+
+  try {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+    return "Signed In";
+  } catch (e) {
+    return e.toString();
+  }
 }
 
 Future<UserCredential> signInWithGoogle() async {

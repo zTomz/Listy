@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 continue;
               }
 
-              await database.deleteEntry(entry);
+              await database.deleteDocByEntry(entry);
             }
 
             await entrances.clear();

@@ -6,6 +6,7 @@ const cBackground = Color(0xFFFFEFEB);
 const cPrimary = Color(0xFFFF6955);
 const cBlack = Color(0xFF000000);
 const cWhite = Color(0xFFFFFFFF);
+const cGrey = Color(0xFFc2c2c2);
 
 class Boxes {
   static Box<String> getEntrances() => Hive.box("entrances");

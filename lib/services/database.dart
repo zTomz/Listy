@@ -147,7 +147,6 @@ class Database {
     String docId = "";
 
     await FirebaseFirestore.instance.collection("Lists").get().then(
-          // ignore: avoid_function_literals_in_foreach_calls
           (value) => value.docs.forEach(
             (list) {
               if (list.get("entry") == entry) {

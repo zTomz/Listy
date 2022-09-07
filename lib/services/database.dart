@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:listy/model/list_item.dart';
 
 class Database {
   String generateNewEntry() {
@@ -69,6 +68,7 @@ class Database {
     String docId = "";
 
     await FirebaseFirestore.instance.collection("Lists").get().then(
+          // ignore: avoid_function_literals_in_foreach_calls
           (value) => value.docs.forEach(
             (list) {
               if (list.get("entry") == entry) {
@@ -109,6 +109,7 @@ class Database {
     String docId = "";
 
     await FirebaseFirestore.instance.collection("Lists").get().then(
+          // ignore: avoid_function_literals_in_foreach_calls
           (value) => value.docs.forEach(
             (list) {
               if (list.get("entry") == entry) {
@@ -146,6 +147,7 @@ class Database {
     String docId = "";
 
     await FirebaseFirestore.instance.collection("Lists").get().then(
+          // ignore: avoid_function_literals_in_foreach_calls
           (value) => value.docs.forEach(
             (list) {
               if (list.get("entry") == entry) {

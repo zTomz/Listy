@@ -41,7 +41,10 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const SettingsPage()));
+            MaterialPageRoute(
+              builder: (context) => const SettingsPage(),
+            ),
+          );
         },
         backgroundColor: theme.primaryColor,
         child: const Icon(Icons.settings),
@@ -58,11 +61,6 @@ class _HomePageState extends State<HomePage> {
                   "Listy",
                   style: theme.textTheme.headline1,
                 ),
-                IconButton(
-                  onPressed: () async {},
-                  icon: const Icon(Icons.filter_list_outlined),
-                  iconSize: 30,
-                )
               ],
             ),
             const SizedBox(height: 20),

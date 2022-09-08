@@ -15,12 +15,6 @@ Future main() async {
   await Hive.initFlutter();
   await Hive.openBox<String>("entrances");
 
-  Box entrances = Boxes.getEntrances();
-
-  if (entrances.values.isEmpty) {
-    entrances.add("#000000");
-  }
-
   runApp(const MyApp());
 }
 

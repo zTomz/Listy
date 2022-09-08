@@ -192,17 +192,20 @@ class _HomePageState extends State<HomePage> {
                                         horizontal: 15),
                                     child: Row(
                                       children: [
-                                        Text(
-                                          buildLists[index].get("title"),
-                                          style: theme.textTheme.bodyText1!
-                                              .copyWith(
-                                            color: selectedList == index
-                                                ? theme.accentColor
-                                                : cBlack,
-                                            fontWeight: FontWeight.w700,
+                                        Expanded(
+                                          child: Text(
+                                            buildLists[index].get("title"),
+                                            style: theme.textTheme.bodyText1!
+                                                .copyWith(
+                                              color: selectedList == index
+                                                  ? theme.accentColor
+                                                  : cBlack,
+                                              fontWeight: FontWeight.w700,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                         ),
-                                        const Spacer(),
+                                        const SizedBox(width: 3),
                                         Text(
                                           buildLists[index].get("entry"),
                                           style: theme.textTheme.bodyText1!
@@ -262,35 +265,52 @@ class _HomePageState extends State<HomePage> {
                                                         : Icons
                                                             .circle_outlined),
                                                   ),
-                                                  Text(
-                                                    buildLists[index]
-                                                            .get("items")[
-                                                        secondIndex]["text"],
-                                                    style: theme
-                                                        .textTheme.bodyText1!
-                                                        .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: buildLists[index]
-                                                                  .get("items")[
-                                                              secondIndex]["done"]
-                                                          ? cGrey
-                                                          : cBlack,
-                                                      decoration: buildLists[
+                                                  Expanded(
+                                                    child: ListView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      children: [
+                                                        Center(
+                                                          child: Text(
+                                                            buildLists[index].get(
+                                                                        "items")[
+                                                                    secondIndex]
+                                                                ["text"],
+                                                            style: theme
+                                                                .textTheme
+                                                                .bodyText1!
+                                                                .copyWith(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color: buildLists[
+                                                                              index]
+                                                                          .get(
+                                                                              "items")[
+                                                                      secondIndex]["done"]
+                                                                  ? cGrey
+                                                                  : cBlack,
+                                                              decoration: buildLists[
+                                                                              index]
+                                                                          .get(
+                                                                              "items")[secondIndex]
+                                                                      ["done"]
+                                                                  ? TextDecoration
+                                                                      .lineThrough
+                                                                  : TextDecoration
+                                                                      .none,
+                                                              inherit: buildLists[
                                                                           index]
                                                                       .get(
                                                                           "items")[
-                                                                  secondIndex]
-                                                              ["done"]
-                                                          ? TextDecoration
-                                                              .lineThrough
-                                                          : TextDecoration.none,
-                                                      inherit: buildLists[index]
-                                                              .get("items")[
-                                                          secondIndex]["done"],
+                                                                  secondIndex]["done"],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  const Spacer(),
+                                                  const SizedBox(width: 10),
                                                   IconButton(
                                                     onPressed: () async {
                                                       await database
@@ -328,8 +348,12 @@ class _HomePageState extends State<HomePage> {
                                             child: TextField(
                                               style: theme.textTheme.headline1!
                                                   .copyWith(
-                                                fontSize: 16,
+                                                fontSize: 18,
                                               ),
+                                              cursorColor: theme.primaryColor,
+                                              cursorWidth: 3,
+                                              cursorRadius:
+                                                  const Radius.circular(15),
                                               controller: newItemController,
                                               decoration: const InputDecoration(
                                                 border: InputBorder.none,

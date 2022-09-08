@@ -25,15 +25,10 @@ class _SettingsPageState extends State<SettingsPage> {
           child: const Text("Delete Data"),
           onPressed: () async {
             for (String entry in entrances.values.toList()) {
-              if (entry == "#000000") {
-                continue;
-              }
-
               await database.deleteDocByEntry(entry);
             }
 
             await entrances.clear();
-            entrances.add("#000000");
           },
         ),
       ),

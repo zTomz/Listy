@@ -192,19 +192,41 @@ class _HomePageState extends State<HomePage> {
                                         horizontal: 15),
                                     child: Row(
                                       children: [
-                                        Expanded(
-                                          child: Text(
-                                            buildLists[index].get("title"),
-                                            style: theme.textTheme.bodyText1!
-                                                .copyWith(
-                                              color: selectedList == index
-                                                  ? theme.accentColor
-                                                  : cBlack,
-                                              fontWeight: FontWeight.w700,
-                                              overflow: TextOverflow.ellipsis,
+                                        if (selectedList == index)
+                                          Expanded(
+                                            child: ListView(
+                                              scrollDirection: Axis.horizontal,
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    buildLists[index]
+                                                        .get("title"),
+                                                    style: theme
+                                                        .textTheme.bodyText1!
+                                                        .copyWith(
+                                                      color: theme.accentColor,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
+                                        if (selectedList != index)
+                                          Expanded(
+                                            child: Text(
+                                              buildLists[index].get("title"),
+                                              style: theme.textTheme.bodyText1!
+                                                  .copyWith(
+                                                color: selectedList == index
+                                                    ? theme.accentColor
+                                                    : cBlack,
+                                                fontWeight: FontWeight.w700,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
                                         const SizedBox(width: 3),
                                         Text(
                                           buildLists[index].get("entry"),
@@ -255,8 +277,9 @@ class _HomePageState extends State<HomePage> {
                                                     onPressed: () {
                                                       database
                                                           .cycleItemDoneStateByEntryAndIndex(
-                                                              entry,
-                                                              secondIndex);
+                                                        entry,
+                                                        secondIndex,
+                                                      );
                                                     },
                                                     icon: Icon(buildLists[index]
                                                                 .get("items")[
@@ -315,8 +338,9 @@ class _HomePageState extends State<HomePage> {
                                                     onPressed: () async {
                                                       await database
                                                           .deleteItemByEntryAndIndex(
-                                                              entry,
-                                                              secondIndex);
+                                                        entry,
+                                                        secondIndex,
+                                                      );
                                                     },
                                                     icon: const Icon(Icons
                                                         .remove_circle_outline_rounded),
@@ -336,9 +360,12 @@ class _HomePageState extends State<HomePage> {
                                                 newItemController.text,
                                               );
 
+                                              print(
+                                                  "Add new item controller reset");
                                               setState(() {
                                                 newItemController.text = "";
                                               });
+                                              print("Controller reset");
                                             },
                                             icon: const Icon(Icons.add_rounded),
                                             color: cGrey,

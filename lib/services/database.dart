@@ -191,4 +191,31 @@ class Database {
       },
     );
   }
+
+  Future renameListByEntry(String newTitle, String entry) async {
+    String docId = "";
+
+    await FirebaseFirestore.instance.collection("Lists").get().then(
+          // ignore: avoid_function_literals_in_foreach_calls
+          (value) => value.docs.forEach(
+            (list) {
+              if (list.get("entry") == entry) {
+                docId = list.id;
+              }
+            },
+          ),
+        );
+
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await FirebaseFirestore.instance.collection("Lists").doc(docId).get();
+
+    await FirebaseFirestore.instance.collection("Lists").doc(docId).set(
+      {
+        "title": newTitle,
+        "entry": entry,
+        "lastEdit": Timestamp.fromDate(DateTime.now()),
+        "items": doc.get("items"),
+      },
+    );
+  }
 }

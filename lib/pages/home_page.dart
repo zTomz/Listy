@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   Database database = Database();
 
   TextEditingController newItemController = TextEditingController();
+  TextEditingController newListNameController = TextEditingController();
 
   int selectedList = -1;
 
@@ -75,6 +76,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: TextField(
+                      cursorColor: theme.primaryColor,
+                      cursorWidth: 3,
+                      cursorRadius: const Radius.circular(15),
                       controller: newListController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -236,16 +240,185 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
-                                        IconButton(
-                                          onPressed: () {
-                                            database.deleteDocByEntry(entry);
+                                        PopupMenuButton(
+                                          tooltip: "Settings",
+                                          icon: selectedList == index
+                                              ? const Icon(
+                                                  Icons.more_horiz_rounded,
+                                                  color: Colors.white,
+                                                )
+                                              : const Icon(
+                                                  Icons.more_horiz_rounded),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          position: PopupMenuPosition.under,
+                                          color: theme.primaryColor,
+                                          onSelected: (int value) {
+                                            if (value == 0) {
+                                              // Rename list
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    SimpleDialog(
+                                                  title: Text(
+                                                    "Rename list",
+                                                    style: theme
+                                                        .textTheme.headline1!
+                                                        .copyWith(fontSize: 20),
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  children: [
+                                                    Container(
+                                                      height: 50,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 30,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: TextField(
+                                                              cursorColor: theme
+                                                                  .primaryColor,
+                                                              cursorWidth: 3,
+                                                              cursorRadius:
+                                                                  const Radius
+                                                                      .circular(15),
+                                                              controller:
+                                                                  newListNameController,
+                                                              decoration:
+                                                                  const InputDecoration(
+                                                                border:
+                                                                    InputBorder
+                                                                        .none,
+                                                                hintText:
+                                                                    "New name",
+                                                                hintStyle:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  fontSize: 18,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              if (newListNameController
+                                                                      .text ==
+                                                                  "") {
+                                                                return;
+                                                              }
+
+                                                              await database
+                                                                  .renameListByEntry(
+                                                                      newListNameController
+                                                                          .text,
+                                                                      entry);
+
+                                                              setState(() {
+                                                                newListNameController
+                                                                    .text = "";
+                                                              });
+                                                              // ignore: use_build_context_synchronously
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons
+                                                                  .drive_file_rename_outline_rounded,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+
+                                            if (value == 1) {
+                                              database.deleteDocByEntry(entry);
+                                            }
                                           },
-                                          icon: const Icon(
-                                              Icons.more_horiz_rounded),
-                                          color: selectedList == index
-                                              ? theme.accentColor
-                                              : cBlack,
+                                          itemBuilder: (BuildContext context) =>
+                                              <PopupMenuEntry<int>>[
+                                            PopupMenuItem(
+                                              value: 0,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                    Icons
+                                                        .drive_file_rename_outline,
+                                                    color: Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 7.5),
+                                                  Text(
+                                                    'Rename',
+                                                    style: theme
+                                                        .textTheme.headline1!
+                                                        .copyWith(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 1,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                  ),
+                                                  const SizedBox(width: 7.5),
+                                                  Text(
+                                                    'Delete',
+                                                    style: theme
+                                                        .textTheme.headline1!
+                                                        .copyWith(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                        // IconButton(
+                                        //   onPressed: () {
+                                        //     database.deleteDocByEntry(entry);
+                                        //   },
+                                        //   icon: const Icon(
+                                        //       Icons.more_horiz_rounded),
+                                        //   color: selectedList == index
+                                        //       ? theme.accentColor
+                                        //       : cBlack,
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -360,12 +533,9 @@ class _HomePageState extends State<HomePage> {
                                                 newItemController.text,
                                               );
 
-                                              print(
-                                                  "Add new item controller reset");
                                               setState(() {
                                                 newItemController.text = "";
                                               });
-                                              print("Controller reset");
                                             },
                                             icon: const Icon(Icons.add_rounded),
                                             color: cGrey,

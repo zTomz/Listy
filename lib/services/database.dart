@@ -218,4 +218,24 @@ class Database {
       },
     );
   }
+
+  Future<List<String>> getEntrysWhichDontExist(List<String> localEntrys) async {
+    List<String> entrancesToDelete = [];
+    List<String> onlineEntrys = [];
+
+    QuerySnapshot<Map<String, dynamic>> data =
+        await FirebaseFirestore.instance.collection("Lists").get();
+
+    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in data.docs) {
+      onlineEntrys.add(doc.get("entry"));
+    }
+
+    for (String entry in localEntrys) {
+      if (!onlineEntrys.contains(entry)) {
+        entrancesToDelete.add(entry);
+      }
+    }
+
+    return entrancesToDelete;
+  }
 }

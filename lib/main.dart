@@ -4,6 +4,7 @@ import 'package:listy/pages/home_page.dart';
 import 'package:listy/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:listy/services/database.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,18 @@ Future main() async {
 
   await Hive.initFlutter();
   await Hive.openBox<String>("entrances");
+
+  // Check if entry exist in database
+  Box entrancesBox = Boxes.getEntrances();
+
+  List<String> entrancesToDelete = await Database()
+      .getEntrysWhichDontExist(entrancesBox.values.toList() as List<String>);
+
+  while (entrancesToDelete.isNotEmpty) {
+    await entrancesBox.deleteAt((entrancesBox.values.toList() as List<String>)
+        .indexOf(entrancesToDelete[0]));
+    entrancesToDelete.removeAt(0);
+  }
 
   runApp(const MyApp());
 }

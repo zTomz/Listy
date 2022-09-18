@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -5,6 +7,9 @@ import 'package:listy/data.dart';
 import 'package:listy/pages/settings_page.dart';
 import 'package:listy/services/database.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:listy/widgets/item_list_item.dart';
+import 'package:listy/widgets/rename_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   TextEditingController newItemController = TextEditingController();
   TextEditingController newListNameController = TextEditingController();
+  TextEditingController newItemNameContrller = TextEditingController();
 
   int selectedList = -1;
 
@@ -30,6 +36,8 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     newListController.dispose();
     newItemController.dispose();
+    newListNameController.dispose();
+    newItemNameContrller.dispose();
 
     super.dispose();
   }
@@ -40,15 +48,14 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SettingsPage(),
-            ),
-          );
+        tooltip: "Support",
+        onPressed: () async {
+          if (!await launchUrl(Uri.parse("https://ko-fi.com/ztomz"))) {
+            throw 'Could not launch https://ko-fi.com/ztomz';
+          }
         },
         backgroundColor: theme.primaryColor,
-        child: const Icon(Icons.settings),
+        child: const Icon(Icons.favorite),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -259,101 +266,33 @@ class _HomePageState extends State<HomePage> {
                                             if (value == 0) {
                                               // Rename list
                                               showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    SimpleDialog(
-                                                  title: Text(
-                                                    "Rename list",
-                                                    style: theme
-                                                        .textTheme.headline1!
-                                                        .copyWith(fontSize: 20),
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  children: [
-                                                    Container(
-                                                      height: 50,
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 30,
-                                                      ),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: TextField(
-                                                              cursorColor: theme
-                                                                  .primaryColor,
-                                                              cursorWidth: 3,
-                                                              cursorRadius:
-                                                                  const Radius
-                                                                      .circular(15),
-                                                              controller:
-                                                                  newListNameController,
-                                                              decoration:
-                                                                  const InputDecoration(
-                                                                border:
-                                                                    InputBorder
-                                                                        .none,
-                                                                hintText:
-                                                                    "New name",
-                                                                hintStyle:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  fontSize: 18,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          IconButton(
-                                                            onPressed:
-                                                                () async {
-                                                              if (newListNameController
-                                                                      .text ==
-                                                                  "") {
-                                                                return;
-                                                              }
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      RenameDialog(
+                                                        textEditingController:
+                                                            newListNameController,
+                                                        onSubmit: () async {
+                                                          if (newListNameController
+                                                                  .text ==
+                                                              "") {
+                                                            return;
+                                                          }
 
-                                                              await database
-                                                                  .renameListByEntry(
-                                                                      newListNameController
-                                                                          .text,
-                                                                      entry);
+                                                          await database
+                                                              .renameListByEntry(
+                                                                  newListNameController
+                                                                      .text,
+                                                                  entry);
 
-                                                              setState(() {
-                                                                newListNameController
-                                                                    .text = "";
-                                                              });
-                                                              // ignore: use_build_context_synchronously
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            icon: const Icon(
-                                                              Icons
-                                                                  .drive_file_rename_outline_rounded,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
+                                                          setState(() {
+                                                            newListNameController
+                                                                .text = "";
+                                                          });
+                                                          // ignore: use_build_context_synchronously
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ));
                                             }
 
                                             if (value == 1) {
@@ -409,16 +348,6 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
-                                        // IconButton(
-                                        //   onPressed: () {
-                                        //     database.deleteDocByEntry(entry);
-                                        //   },
-                                        //   icon: const Icon(
-                                        //       Icons.more_horiz_rounded),
-                                        //   color: selectedList == index
-                                        //       ? theme.accentColor
-                                        //       : cBlack,
-                                        // ),
                                       ],
                                     ),
                                   ),
@@ -442,84 +371,11 @@ class _HomePageState extends State<HomePage> {
                                                   .get("items") as List)
                                               .length,
                                           itemBuilder: (context, secondIndex) {
-                                            return SizedBox(
-                                              height: 42.5,
-                                              child: Row(
-                                                children: [
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      database
-                                                          .cycleItemDoneStateByEntryAndIndex(
-                                                        entry,
-                                                        secondIndex,
-                                                      );
-                                                    },
-                                                    icon: Icon(buildLists[index]
-                                                                .get("items")[
-                                                            secondIndex]["done"]
-                                                        ? Icons.task_alt_rounded
-                                                        : Icons
-                                                            .circle_outlined),
-                                                  ),
-                                                  Expanded(
-                                                    child: ListView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      children: [
-                                                        Center(
-                                                          child: Text(
-                                                            buildLists[index].get(
-                                                                        "items")[
-                                                                    secondIndex]
-                                                                ["text"],
-                                                            style: theme
-                                                                .textTheme
-                                                                .bodyText1!
-                                                                .copyWith(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              color: buildLists[
-                                                                              index]
-                                                                          .get(
-                                                                              "items")[
-                                                                      secondIndex]["done"]
-                                                                  ? cGrey
-                                                                  : cBlack,
-                                                              decoration: buildLists[
-                                                                              index]
-                                                                          .get(
-                                                                              "items")[secondIndex]
-                                                                      ["done"]
-                                                                  ? TextDecoration
-                                                                      .lineThrough
-                                                                  : TextDecoration
-                                                                      .none,
-                                                              inherit: buildLists[
-                                                                          index]
-                                                                      .get(
-                                                                          "items")[
-                                                                  secondIndex]["done"],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  IconButton(
-                                                    onPressed: () async {
-                                                      await database
-                                                          .deleteItemByEntryAndIndex(
-                                                        entry,
-                                                        secondIndex,
-                                                      );
-                                                    },
-                                                    icon: const Icon(Icons
-                                                        .remove_circle_outline_rounded),
-                                                  ),
-                                                ],
-                                              ),
+                                            return ItemListItem(
+                                              database: database,
+                                              object: buildLists[index],
+                                              index: secondIndex,
+                                              theme: theme,
                                             );
                                           },
                                         ),
